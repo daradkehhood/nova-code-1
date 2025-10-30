@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="https://public-frontend-cos.metadl.com/mgx/img/favicon.png" type="image/png">
+  <title>استوديو الألعاب الاحترافي - تجربة لعب استثنائية</title>
+  <meta name="description" content="استوديو ألعاب احترافي يقدم تجارب لعب استثنائية مع أحدث التقنيات والرسوميات ثلاثية الأبعاد" />
+  <meta name="author" content="Gaming Studio" />
+  <meta name="keywords" content="ألعاب, استوديو, ثلاثي الأبعاد, تفاعلي, احترافي" />
+
+  <meta property="og:title" content="استوديو الألعاب الاحترافي" />
+  <meta property="og:description" content="تجربة لعب استثنائية مع أحدث التقنيات" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=630&q=80" />
+
+  <!-- Preload critical resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Three.js and GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <style>
+    /* تصميم مخصص للألعاب */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* ألوان الألعاب */
+  --gaming-primary: #00ffff;
+  --gaming-secondary: #ff00ff;
+  --gaming-accent: #00ff00;
+  --gaming-purple: #8b5cf6;
+  --gaming-pink: #ec4899;
+  
+  /* تدرجات */
+  --gaming-gradient-primary: linear-gradient(135deg, #00ffff, #8b5cf6);
+  --gaming-gradient-secondary: linear-gradient(135deg, #ff00ff, #ec4899);
+  --gaming-gradient-accent: linear-gradient(135deg, #00ff00, #00ffff);
+  --gaming-gradient-dark: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+  
+  /* ظلال */
+  --gaming-shadow-cyan: 0 0 20px rgba(0, 255, 255, 0.3);
+  --gaming-shadow-purple: 0 0 20px rgba(139, 92, 246, 0.3);
+  --gaming-shadow-pink: 0 0 20px rgba(236, 72, 153, 0.3);
+  
+  /* انيميشن */
+  --gaming-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --gaming-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* خط عربي محسن */
+* {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* خلفية متحركة */
+.gaming-background {
+  background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.gaming-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+  animation: backgroundPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes backgroundPulse {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.7; }
+}
+
+/* شبكة خلفية */
+.gaming-grid {
+  background-image: 
+    linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+/* تأثيرات النص */
+.gaming-text-glow {
+  text-shadow: 
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor,
+    0 0 20px currentColor;
+}
+
+.gaming-text-glitch {
+  position: relative;
+  animation: glitch 2s infinite;
+}
+
+.gaming-text-glitch::before,
+.gaming-text-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gaming-text-glitch::before {
+  animation: glitchTop 1s infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+  -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+}
+
+.gaming-text-glitch::after {
+  animation: glitchBottom 1.5s infinite;
+  clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+  -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitchTop {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, -2px); }
+  40% { transform: translate(-2px, 2px); }
+  60% { transform: translate(2px, -2px); }
+  80% { transform: translate(2px, 2px); }
+}
+
+@keyframes glitchBottom {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, 2px); }
+  60% { transform: translate(-2px, -2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+/* تأثيرات الأزرار */
+.gaming-button {
+  position: relative;
+  background: var(--gaming-gradient-primary);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  color: black;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: var(--gaming-transition);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gaming-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.gaming-button:hover::before {
+  left: 100%;
+}
+
+.gaming-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--gaming-shadow-cyan);
+}
+
+.gaming-button:active {
+  transform: translateY(0);
+}
+
+/* تأثيرات البطاقات */
+.gaming-card {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  transition: var(--gaming-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.gaming-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gaming-gradient-primary);
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+}
+
+.gaming-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gaming-primary);
+  box-shadow: var(--gaming-shadow-cyan);
+}
+
+.gaming-card:hover::before {
+  opacity: 0.1;
+}
+
+/* تأثيرات الجزيئات */
+.gaming-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.gaming-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--gaming-primary);
+  border-radius: 50%;
+  animation: particleFloat 6s infinite linear;
+  box-shadow: 0 0 6px currentColor;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-10vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* تأثيرات التمرير */
+.gaming-parallax {
+  transform: translateZ(0);
+  transition: transform 0.1s ease-out;
+}
+
+/* تأثيرات الوهج */
+.gaming-glow-cyan {
+  box-shadow: var(--gaming-shadow-cyan);
+}
+
+.gaming-glow-purple {
+  box-shadow: var(--gaming-shadow-purple);
+}
+
+.gaming-glow-pink {
+  box-shadow: var(--gaming-shadow-pink);
+}
+
+/* تأثيرات الحدود المتحركة */
+.gaming-border-animated {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(45deg, #1a1a2e, #0a0a0a) padding-box,
+              var(--gaming-gradient-primary) border-box;
+  border-radius: 12px;
+}
+
+.gaming-border-animated::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: var(--gaming-gradient-primary);
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  animation: borderRotate 3s linear infinite;
+}
+
+@keyframes borderRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* تأثيرات الصور */
+.gaming-image-hover {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.gaming-image-hover img {
+  transition: transform 0.5s ease;
+}
+
+.gaming-image-hover:hover img {
+  transform: scale(1.1);
+}
+
+.gaming-image-hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gaming-gradient-primary);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.gaming-image-hover:hover::after {
+  opacity: 0.2;
+}
+
+/* تأثيرات النبض */
+.gaming-pulse {
+  animation: gamingPulse 2s infinite;
+}
+
+@keyframes gamingPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 255, 255, 0);
+  }
+}
+
+/* تأثيرات التحميل */
+.gaming-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.gaming-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+  animation: loadingShimmer 1.5s infinite;
+}
+
+@keyframes loadingShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* تحسينات الأداء */
+.gaming-optimized {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* تصميم متجاوب */
+@media (max-width: 768px) {
+  .gaming-card {
+    border-radius: 12px;
+  }
+  
+  .gaming-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .gaming-text-glow {
+    text-shadow: 
+      0 0 3px currentColor,
+      0 0 6px currentColor,
+      0 0 9px currentColor;
+  }
+}
+
+/* تأثيرات خاصة للعناصر التفاعلية */
+.interactive-element {
+  cursor: pointer;
+  transition: var(--gaming-transition);
+}
+
+.interactive-element:hover {
+  transform: scale(1.05);
+}
+
+.interactive-element:active {
+  transform: scale(0.95);
+}
+
+/* تأثيرات الظهور التدريجي */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-left {
+  opacity: 0;
+  transform: translateX(-30px);
+  animation: fadeInLeft 0.8s ease forwards;
+}
+
+@keyframes fadeInLeft {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in-right {
+  opacity: 0;
+  transform: translateX(30px);
+  animation: fadeInRight 0.8s ease forwards;
+}
+
+@keyframes fadeInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>
